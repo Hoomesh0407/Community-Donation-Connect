@@ -16,6 +16,9 @@ import Matches from "@/pages/matches";
 import Leaderboard from "@/pages/leaderboard";
 import Notifications from "@/pages/notifications";
 import Profile from "@/pages/profile";
+import Admin from "@/pages/admin";
+import Donate from "@/pages/donate";
+import RequestItem from "@/pages/request";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +35,9 @@ function Router() {
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/notifications" component={Notifications} />
       <Route path="/profile/:id" component={Profile} />
+      <Route path="/donate" component={Donate} />
+      <Route path="/request" component={RequestItem} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

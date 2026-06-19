@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Heart, Bell, Menu, UserCircle } from "lucide-react";
+import { Heart, Bell, UserCircle, ShieldCheck } from "lucide-react";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -65,6 +65,11 @@ export function Navbar() {
                   <DropdownMenuItem onClick={() => setLocation("/matches")}>
                     {t("nav.matches")}
                   </DropdownMenuItem>
+                  {user?.role === "admin" && (
+                    <DropdownMenuItem onClick={() => setLocation("/admin")} className="gap-2">
+                      <ShieldCheck size={14} /> Admin Dashboard
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                     {t("nav.logout")}
                   </DropdownMenuItem>

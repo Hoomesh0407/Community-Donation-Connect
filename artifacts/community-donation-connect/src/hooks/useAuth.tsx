@@ -22,6 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const { data: user, isLoading, isError } = useGetMe({
     query: {
+      queryKey: ["me", token],
       enabled: !!token,
       retry: false,
     }
