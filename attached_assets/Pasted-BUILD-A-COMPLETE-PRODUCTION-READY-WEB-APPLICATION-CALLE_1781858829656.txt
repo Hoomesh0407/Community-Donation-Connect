@@ -1,0 +1,652 @@
+BUILD A COMPLETE PRODUCTION-READY WEB APPLICATION CALLED "COMMUNITY DONATION CONNECT"
+
+IMPORTANT INSTRUCTIONS
+
+Generate a complete production-ready full-stack web application.
+
+The application must be designed for real-world deployment and should include frontend, backend, database schema, APIs, authentication, multilingual support, maps integration, matching engine, trust system, admin dashboard, notifications, deployment configuration, GitHub integration support, and Vercel deployment readiness.
+
+The final output must contain clean architecture, scalable code, responsive design, and proper documentation.
+
+PROJECT OBJECTIVE
+
+Community Donation Connect is a multilingual platform that helps donors and receivers connect directly within local communities.
+
+The platform should allow users to donate useful items and allow needy people to request those items.
+
+The system must intelligently match nearby donors and receivers based on:
+
+* Item Category
+* Item Type
+* Distance
+* User Verification
+* Trust Score
+* Receiver Urgency
+
+The goal is to reduce waste and help communities support each other directly.
+
+LANGUAGE SELECTION
+
+The first screen of the website must be a language selection page.
+
+Available Languages:
+
+* English
+* Telugu
+
+Requirements:
+
+* Entire website must switch language instantly.
+* Menus
+* Buttons
+* Forms
+* Notifications
+* Emails
+* Messages
+* Error Messages
+* Dashboard
+* Admin Panel
+
+Everything must be translated.
+
+Users can change language anytime from settings.
+
+Use proper internationalization support.
+
+USER ONBOARDING
+
+IMPORTANT
+
+Keep registration extremely simple.
+
+Avoid long registration forms.
+
+Registration should take less than 1 minute.
+
+STEP 1
+
+Choose User Type:
+
+* Donor
+* Receiver
+
+STEP 2
+
+Create Account:
+
+Required Fields Only:
+
+* Full Name
+* Phone Number
+* Gmail ID
+* Password
+
+Verification:
+
+* Phone OTP Verification
+* Email Verification
+
+STEP 3
+
+Complete Profile Later
+
+Additional Details:
+
+* Age
+* Gender
+* Occupation
+* Highest Qualification
+* Profile Photo
+* Address
+* Village/Town
+* District
+* State
+* Pincode
+
+Location:
+
+* GPS Permission
+* Latitude
+* Longitude
+
+Profile completion should be optional initially.
+
+The user should not be forced to fill everything before using the platform.
+
+HOME PAGE
+
+Modern NGO-style homepage.
+
+Hero Section:
+
+Headline:
+"Donate Locally. Help Directly."
+
+Subheading:
+"Connect donors and receivers within your community."
+
+Two Primary Buttons:
+
+1. I Want To Donate
+2. I Need Help
+
+Additional Sections:
+
+* How It Works
+* Verified Users
+* Nearby Matching
+* Trust Score System
+* Community Impact Statistics
+* Success Stories
+* Reviews
+* FAQ
+* Contact Us
+
+USER TYPES
+
+1. Donor
+2. Receiver
+
+DONOR WORKFLOW
+
+When user selects:
+
+I WANT TO DONATE
+
+STEP 1
+
+Choose Category
+
+* Clothes
+* Books
+* Electronics
+* Furniture
+* Kitchen Items
+* School Supplies
+* Toys
+* Medical Equipment
+* Mobile Phones
+* Laptops
+* Cycles
+* Home Appliances
+* Other
+
+STEP 2
+
+Enter Item Information
+
+* Item Name
+* Quantity
+* Brand (Optional)
+* Purchase Year (Optional)
+
+Condition:
+
+* Like New
+* Excellent
+* Good
+* Fair
+* Poor
+
+STEP 3
+
+Upload Proof
+
+Mandatory:
+
+* Minimum 3 Images
+* Video Proof
+
+Video Length:
+
+Maximum 2 Minutes
+
+Purpose:
+
+Increase trust and transparency.
+
+STEP 4
+
+Pickup Information
+
+* Address
+* GPS Location
+
+Distance Preference
+
+Donor can choose preferred matching radius:
+
+1 km
+2 km
+3 km
+4 km
+5 km
+6 km
+7 km
+8 km
+9 km
+10 km
+
+Default:
+
+5 km
+
+STEP 5
+
+Publish Donation
+
+RECEIVER WORKFLOW
+
+When user selects:
+
+I NEED HELP
+
+STEP 1
+
+Choose Category
+
+* Clothes
+* Books
+* Electronics
+* Furniture
+* Kitchen Items
+* School Supplies
+* Toys
+* Medical Equipment
+* Mobile Phones
+* Laptops
+* Cycles
+* Home Appliances
+* Other
+
+STEP 2
+
+Requirement Details
+
+Fields:
+
+* Item Name
+* Quantity Needed
+* Reason For Request
+
+Urgency:
+
+* Low
+* Medium
+* High
+* Critical
+
+STEP 3
+
+Location
+
+* Address
+* GPS Location
+
+Distance Preference
+
+Receiver can select maximum search radius:
+
+1 km
+2 km
+3 km
+4 km
+5 km
+6 km
+7 km
+8 km
+9 km
+10 km
+
+Default:
+
+5 km
+
+STEP 4
+
+Submit Request
+
+SMART MATCHING ENGINE
+
+Core Feature
+
+Automatically match donors and receivers.
+
+Matching Rules
+
+1. Same Category
+2. Same Item Type
+3. Match within selected radius
+4. Verified Users First
+5. Higher Trust Score First
+6. Higher Urgency Receivers First
+
+Distance Limit
+
+Variable
+
+Minimum:
+1 km
+
+Maximum:
+10 km
+
+The system must match based on whichever radius is selected by donor or receiver.
+
+PRIVACY PROTECTION
+
+IMPORTANT
+
+Phone numbers and email addresses must NOT be visible before matching.
+
+Before Match:
+
+Hide:
+
+* Phone Number
+* Email
+* Exact Address
+
+Show Only:
+
+* First Name
+* Area/Village
+* Item Information
+* Distance
+
+AFTER MATCH CONFIRMATION
+
+Only after both users accept the match:
+
+Reveal:
+
+* Full Name
+* Phone Number
+* Gmail ID
+
+This protects privacy and prevents spam.
+
+NOTIFICATIONS
+
+After successful match:
+
+Donor receives:
+
+* Receiver Name
+* Receiver Phone Number
+* Receiver Gmail
+* Distance
+* Requested Item
+
+Receiver receives:
+
+* Donor Name
+* Donor Phone Number
+* Donor Gmail
+* Distance
+* Item Information
+* Item Images
+
+Notifications:
+
+* Website Notification
+* Email Notification
+* SMS Notification
+
+ITEM TRANSFER SYSTEM
+
+NO VOLUNTEERS
+
+Do not create any volunteer module.
+
+The system must support only:
+
+Option 1
+
+Receiver travels to donor location and collects item.
+
+Option 2
+
+Receiver requests home delivery.
+
+If donor agrees:
+
+Donor personally delivers item.
+
+No third-party delivery system.
+
+No volunteer management.
+
+DONATION COMPLETION
+
+After transfer:
+
+Donor:
+
+Mark Donation Completed
+
+Receiver:
+
+Confirm Item Received
+
+System:
+
+Create Donation Record
+
+Generate Digital Donation Certificate
+
+Store Transaction History
+
+REVIEW SYSTEM
+
+After receiving item:
+
+Receiver must provide review.
+
+Review Fields:
+
+* Item Quality Rating
+* Condition Accuracy Rating
+* Satisfaction Rating
+
+Scale:
+
+1 to 5 Stars
+
+Feedback Text
+
+Example:
+
+"The item was exactly as shown in the uploaded video and works perfectly."
+
+TRUST SCORE SYSTEM
+
+Every donor has a Trust Score.
+
+Scoring:
+
+5 Stars = +20 Points
+4 Stars = +15 Points
+3 Stars = +10 Points
+2 Stars = +5 Points
+1 Star = 0 Points
+
+Trust Levels:
+
+0-50
+New Donor
+
+51-150
+Trusted Donor
+
+151-300
+Highly Trusted Donor
+
+301+
+Community Champion
+
+Show:
+
+* Trust Badge
+* Trust Level
+* Total Donations
+* Average Rating
+
+on every donor profile.
+
+MAP INTEGRATION
+
+Use Google Maps API.
+
+Features:
+
+* Current Location
+* Donor Location
+* Receiver Location
+* Distance Calculation
+* Route Guidance
+
+ADMIN PANEL
+
+Dashboard:
+
+* Total Users
+* Total Donations
+* Total Matches
+* Total Receivers Helped
+* Trust Leaderboard
+
+User Management:
+
+* Verify Users
+* Suspend Users
+* Remove Fake Accounts
+
+Review Management:
+
+* Moderate Reviews
+* Handle Abuse Reports
+
+Analytics:
+
+* Donation Trends
+* Popular Categories
+* Heat Maps
+* Matching Success Rate
+
+SECURITY
+
+* Firebase Authentication
+* JWT Authentication
+* Password Encryption
+* OTP Verification
+* Email Verification
+* Spam Protection
+* Rate Limiting
+* Role Based Access Control
+
+DATABASE TABLES
+
+Create complete schema for:
+
+Users
+Profiles
+Items
+ItemImages
+ItemVideos
+DonationListings
+ReceiverRequests
+Matches
+Reviews
+TrustScores
+Notifications
+Locations
+Certificates
+AdminLogs
+
+TECH STACK
+
+Frontend:
+
+* Next.js
+* React
+* Tailwind CSS
+* TypeScript
+
+Backend:
+
+* Node.js
+* Express.js
+
+Database:
+
+* PostgreSQL
+
+Storage:
+
+* Firebase Storage
+
+Authentication:
+
+* Firebase Auth
+
+Maps:
+
+* Google Maps API
+
+Localization:
+
+* English
+* Telugu
+
+DEPLOYMENT
+
+Generate:
+
+* GitHub-ready repository structure
+* README.md
+* API Documentation
+* Environment Variables Guide
+* Deployment Guide
+
+Prepare application for:
+
+* Vercel Deployment
+
+UI DESIGN
+
+Theme:
+
+* Modern
+* Trustworthy
+* Community Focused
+* NGO Style
+* Accessibility Friendly
+
+Color Palette:
+
+* Blue
+* Green
+* White
+
+FINAL REQUIREMENT
+
+Generate:
+
+* Complete Source Code
+* Frontend
+* Backend
+* APIs
+* Database Schema
+* Authentication
+* Matching Engine
+* Notifications
+* Trust Score System
+* Review System
+* Admin Dashboard
+* Multilingual Support
+* Responsive Mobile Design
+* GitHub Project Structure
+* Deployment Configuration
+
+The project must be production-ready and scalable.

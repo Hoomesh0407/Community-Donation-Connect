@@ -1,0 +1,1 @@
+- [i18n infinite loop fix](i18n-context-fix.md) — zustand selector returning object causes infinite loops; use React context instead for i18n stores

@@ -3,20 +3,26 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Community Donation Connect API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: auth
+  - name: users
+  - name: donations
+  - name: requests
+  - name: matches
+  - name: reviews
+  - name: notifications
+  - name: admin
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +30,1230 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ── AUTH ──────────────────────────────────────────────────────────────
+  /auth/register:
+    post:
+      operationId: registerUser
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistration"
+      responses:
+        "201":
+          description: Registered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/login:
+    post:
+      operationId: loginUser
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Logged in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+
+  /auth/logout:
+    post:
+      operationId: logoutUser
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  # ── USERS ─────────────────────────────────────────────────────────────
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get user profile by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserPublic"
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update user profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}/trust:
+    get:
+      operationId: getUserTrust
+      tags: [users]
+      summary: Get trust score details for a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Trust score
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrustScore"
+
+  /users/leaderboard:
+    get:
+      operationId: getTrustLeaderboard
+      tags: [users]
+      summary: Get top donors by trust score
+      responses:
+        "200":
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  # ── DONATIONS ─────────────────────────────────────────────────────────
+  /donations:
+    get:
+      operationId: listDonations
+      tags: [donations]
+      summary: List all active donations
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: lat
+          in: query
+          schema:
+            type: number
+        - name: lng
+          in: query
+          schema:
+            type: number
+        - name: radius
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of donations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Donation"
+    post:
+      operationId: createDonation
+      tags: [donations]
+      summary: Create a donation listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DonationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Donation"
+
+  /donations/{id}:
+    get:
+      operationId: getDonation
+      tags: [donations]
+      summary: Get a donation by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Donation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Donation"
+    patch:
+      operationId: updateDonation
+      tags: [donations]
+      summary: Update a donation listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DonationUpdate"
+      responses:
+        "200":
+          description: Updated donation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Donation"
+    delete:
+      operationId: deleteDonation
+      tags: [donations]
+      summary: Delete a donation listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /donations/{id}/complete:
+    patch:
+      operationId: completeDonation
+      tags: [donations]
+      summary: Mark donation as completed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Donation"
+
+  # ── RECEIVER REQUESTS ─────────────────────────────────────────────────
+  /requests:
+    get:
+      operationId: listRequests
+      tags: [requests]
+      summary: List receiver requests
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: urgency
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReceiverRequest"
+    post:
+      operationId: createRequest
+      tags: [requests]
+      summary: Create a receiver request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceiverRequest"
+
+  /requests/{id}:
+    get:
+      operationId: getRequest
+      tags: [requests]
+      summary: Get a request by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceiverRequest"
+    patch:
+      operationId: updateRequest
+      tags: [requests]
+      summary: Update a receiver request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RequestUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReceiverRequest"
+    delete:
+      operationId: deleteRequest
+      tags: [requests]
+      summary: Delete a receiver request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ── MATCHING ENGINE ───────────────────────────────────────────────────
+  /matches:
+    get:
+      operationId: listMatches
+      tags: [matches]
+      summary: List matches for current user
+      responses:
+        "200":
+          description: Matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Match"
+
+  /matches/find:
+    post:
+      operationId: findMatches
+      tags: [matches]
+      summary: Find matches for a donation or request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MatchSearch"
+      responses:
+        "200":
+          description: Potential matches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MatchResult"
+
+  /matches/{id}/accept:
+    patch:
+      operationId: acceptMatch
+      tags: [matches]
+      summary: Accept a match
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Match accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+
+  /matches/{id}/confirm:
+    patch:
+      operationId: confirmMatch
+      tags: [matches]
+      summary: Confirm item received/transferred
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Match"
+
+  # ── REVIEWS ───────────────────────────────────────────────────────────
+  /reviews:
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Submit a review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Review submitted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+
+  /reviews/donor/{donorId}:
+    get:
+      operationId: getDonorReviews
+      tags: [reviews]
+      summary: Get reviews for a donor
+      parameters:
+        - name: donorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Review"
+
+  # ── NOTIFICATIONS ─────────────────────────────────────────────────────
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: Get current user's notifications
+      responses:
+        "200":
+          description: Notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /notifications/{id}/read:
+    patch:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark a notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Marked read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+
+  /notifications/read-all:
+    patch:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "200":
+          description: All read
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  # ── ADMIN ─────────────────────────────────────────────────────────────
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Platform-wide statistics
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/users:
+    get:
+      operationId: listAdminUsers
+      tags: [admin]
+      summary: List all users (admin)
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /admin/users/{id}/verify:
+    patch:
+      operationId: verifyUser
+      tags: [admin]
+      summary: Verify a user account
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Verified
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /admin/users/{id}/suspend:
+    patch:
+      operationId: suspendUser
+      tags: [admin]
+      summary: Suspend or unsuspend a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SuspendInput"
+      responses:
+        "200":
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /admin/categories/stats:
+    get:
+      operationId: getCategoryStats
+      tags: [admin]
+      summary: Donation stats by category
+      responses:
+        "200":
+          description: Category breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryStat"
+
+  # ── PLATFORM STATS (public) ───────────────────────────────────────────
+  /stats:
+    get:
+      operationId: getPlatformStats
+      tags: [admin]
+      summary: Public community impact stats
+      responses:
+        "200":
+          description: Community stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    MessageResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+
+    # ── USER SCHEMAS ────────────────────────────────────────────────────
+    User:
+      type: object
+      required: [id, fullName, email, phone, role, isVerified, trustScore, trustLevel, status, createdAt]
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [donor, receiver, admin]
+        isVerified:
+          type: boolean
+        trustScore:
+          type: integer
+        trustLevel:
+          type: string
+          enum: [new, trusted, highlyTrusted, champion]
+        totalDonations:
+          type: integer
+        averageRating:
+          type: ["number", "null"]
+        profilePhoto:
+          type: ["string", "null"]
+        village:
+          type: ["string", "null"]
+        district:
+          type: ["string", "null"]
+        state:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [active, suspended]
+        createdAt:
+          type: string
+
+    UserPublic:
+      type: object
+      required: [id, fullName, role, isVerified, trustScore, trustLevel, totalDonations, averageRating, createdAt]
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        role:
+          type: string
+        isVerified:
+          type: boolean
+        trustScore:
+          type: integer
+        trustLevel:
+          type: string
+        totalDonations:
+          type: integer
+        averageRating:
+          type: ["number", "null"]
+        profilePhoto:
+          type: ["string", "null"]
+        village:
+          type: ["string", "null"]
+        district:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    UserRegistration:
+      type: object
+      required: [fullName, email, phone, password, role]
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [donor, receiver]
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    UserUpdate:
+      type: object
+      properties:
+        fullName:
+          type: string
+        profilePhoto:
+          type: string
+        age:
+          type: integer
+        gender:
+          type: string
+        occupation:
+          type: string
+        qualification:
+          type: string
+        address:
+          type: string
+        village:
+          type: string
+        district:
+          type: string
+        state:
+          type: string
+        pincode:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+
+    TrustScore:
+      type: object
+      required: [userId, score, level, totalDonations, averageRating, badge]
+      properties:
+        userId:
+          type: integer
+        score:
+          type: integer
+        level:
+          type: string
+        totalDonations:
+          type: integer
+        averageRating:
+          type: ["number", "null"]
+        badge:
+          type: string
+
+    LeaderboardEntry:
+      type: object
+      required: [rank, userId, fullName, trustScore, trustLevel, totalDonations, averageRating]
+      properties:
+        rank:
+          type: integer
+        userId:
+          type: integer
+        fullName:
+          type: string
+        profilePhoto:
+          type: ["string", "null"]
+        trustScore:
+          type: integer
+        trustLevel:
+          type: string
+        totalDonations:
+          type: integer
+        averageRating:
+          type: ["number", "null"]
+
+    # ── DONATION SCHEMAS ─────────────────────────────────────────────────
+    Donation:
+      type: object
+      required: [id, donorId, donorName, category, itemName, quantity, condition, status, radiusKm, createdAt]
+      properties:
+        id:
+          type: integer
+        donorId:
+          type: integer
+        donorName:
+          type: string
+        donorVerified:
+          type: boolean
+        donorTrustScore:
+          type: integer
+        donorTrustLevel:
+          type: string
+        category:
+          type: string
+        itemName:
+          type: string
+        quantity:
+          type: integer
+        brand:
+          type: ["string", "null"]
+        purchaseYear:
+          type: ["integer", "null"]
+        condition:
+          type: string
+          enum: [likeNew, excellent, good, fair, poor]
+        images:
+          type: array
+          items:
+            type: string
+        videoUrl:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        village:
+          type: ["string", "null"]
+        latitude:
+          type: ["number", "null"]
+        longitude:
+          type: ["number", "null"]
+        radiusKm:
+          type: integer
+        status:
+          type: string
+          enum: [active, matched, completed, cancelled]
+        distance:
+          type: ["number", "null"]
+        createdAt:
+          type: string
+
+    DonationInput:
+      type: object
+      required: [category, itemName, quantity, condition, radiusKm]
+      properties:
+        category:
+          type: string
+        itemName:
+          type: string
+        quantity:
+          type: integer
+        brand:
+          type: string
+        purchaseYear:
+          type: integer
+        condition:
+          type: string
+          enum: [likeNew, excellent, good, fair, poor]
+        images:
+          type: array
+          items:
+            type: string
+        videoUrl:
+          type: string
+        address:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        radiusKm:
+          type: integer
+
+    DonationUpdate:
+      type: object
+      properties:
+        itemName:
+          type: string
+        quantity:
+          type: integer
+        condition:
+          type: string
+        radiusKm:
+          type: integer
+        status:
+          type: string
+
+    # ── REQUEST SCHEMAS ───────────────────────────────────────────────────
+    ReceiverRequest:
+      type: object
+      required: [id, receiverId, receiverName, category, itemName, quantity, urgency, status, radiusKm, createdAt]
+      properties:
+        id:
+          type: integer
+        receiverId:
+          type: integer
+        receiverName:
+          type: string
+        receiverVerified:
+          type: boolean
+        category:
+          type: string
+        itemName:
+          type: string
+        quantity:
+          type: integer
+        reason:
+          type: ["string", "null"]
+        urgency:
+          type: string
+          enum: [low, medium, high, critical]
+        address:
+          type: ["string", "null"]
+        village:
+          type: ["string", "null"]
+        latitude:
+          type: ["number", "null"]
+        longitude:
+          type: ["number", "null"]
+        radiusKm:
+          type: integer
+        status:
+          type: string
+          enum: [active, matched, fulfilled, cancelled]
+        distance:
+          type: ["number", "null"]
+        createdAt:
+          type: string
+
+    RequestInput:
+      type: object
+      required: [category, itemName, quantity, urgency, radiusKm]
+      properties:
+        category:
+          type: string
+        itemName:
+          type: string
+        quantity:
+          type: integer
+        reason:
+          type: string
+        urgency:
+          type: string
+          enum: [low, medium, high, critical]
+        address:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        radiusKm:
+          type: integer
+
+    RequestUpdate:
+      type: object
+      properties:
+        itemName:
+          type: string
+        quantity:
+          type: integer
+        urgency:
+          type: string
+        radiusKm:
+          type: integer
+        status:
+          type: string
+
+    # ── MATCH SCHEMAS ─────────────────────────────────────────────────────
+    Match:
+      type: object
+      required: [id, donationId, requestId, status, distanceKm, createdAt]
+      properties:
+        id:
+          type: integer
+        donationId:
+          type: integer
+        requestId:
+          type: integer
+        donorId:
+          type: integer
+        receiverId:
+          type: integer
+        donorName:
+          type: string
+        receiverName:
+          type: string
+        donorPhone:
+          type: ["string", "null"]
+        receiverPhone:
+          type: ["string", "null"]
+        donorEmail:
+          type: ["string", "null"]
+        receiverEmail:
+          type: ["string", "null"]
+        itemName:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, confirmed, completed, cancelled]
+        distanceKm:
+          type: number
+        donorAccepted:
+          type: boolean
+        receiverAccepted:
+          type: boolean
+        deliveryType:
+          type: ["string", "null"]
+          enum: [pickup, delivery, "null"]
+        createdAt:
+          type: string
+
+    MatchSearch:
+      type: object
+      required: [type, id]
+      properties:
+        type:
+          type: string
+          enum: [donation, request]
+        id:
+          type: integer
+
+    MatchResult:
+      type: object
+      required: [id, category, itemName, distanceKm, urgency, trustScore, isVerified]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [donation, request]
+        firstName:
+          type: string
+        village:
+          type: ["string", "null"]
+        category:
+          type: string
+        itemName:
+          type: string
+        distanceKm:
+          type: number
+        urgency:
+          type: ["string", "null"]
+        trustScore:
+          type: integer
+        isVerified:
+          type: boolean
+
+    # ── REVIEW SCHEMAS ────────────────────────────────────────────────────
+    Review:
+      type: object
+      required: [id, matchId, donorId, receiverId, qualityRating, conditionRating, satisfactionRating, createdAt]
+      properties:
+        id:
+          type: integer
+        matchId:
+          type: integer
+        donorId:
+          type: integer
+        receiverId:
+          type: integer
+        qualityRating:
+          type: integer
+        conditionRating:
+          type: integer
+        satisfactionRating:
+          type: integer
+        feedback:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    ReviewInput:
+      type: object
+      required: [matchId, qualityRating, conditionRating, satisfactionRating]
+      properties:
+        matchId:
+          type: integer
+        qualityRating:
+          type: integer
+        conditionRating:
+          type: integer
+        satisfactionRating:
+          type: integer
+        feedback:
+          type: string
+
+    # ── NOTIFICATION SCHEMAS ──────────────────────────────────────────────
+    Notification:
+      type: object
+      required: [id, userId, type, title, message, isRead, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        type:
+          type: string
+          enum: [match, accepted, confirmed, review, system]
+        title:
+          type: string
+        message:
+          type: string
+        isRead:
+          type: boolean
+        relatedId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+
+    # ── ADMIN SCHEMAS ─────────────────────────────────────────────────────
+    AdminStats:
+      type: object
+      required: [totalUsers, totalDonors, totalReceivers, totalDonations, totalRequests, totalMatches, totalCompleted, matchSuccessRate]
+      properties:
+        totalUsers:
+          type: integer
+        totalDonors:
+          type: integer
+        totalReceivers:
+          type: integer
+        totalDonations:
+          type: integer
+        totalRequests:
+          type: integer
+        totalMatches:
+          type: integer
+        totalCompleted:
+          type: integer
+        matchSuccessRate:
+          type: number
+        verifiedUsers:
+          type: integer
+        suspendedUsers:
+          type: integer
+
+    PlatformStats:
+      type: object
+      required: [totalDonors, totalReceivers, totalItemsDonated, totalMatchesMade, totalCommunitiesServed]
+      properties:
+        totalDonors:
+          type: integer
+        totalReceivers:
+          type: integer
+        totalItemsDonated:
+          type: integer
+        totalMatchesMade:
+          type: integer
+        totalCommunitiesServed:
+          type: integer
+
+    CategoryStat:
+      type: object
+      required: [category, count, percentage]
+      properties:
+        category:
+          type: string
+        count:
+          type: integer
+        percentage:
+          type: number
+
+    SuspendInput:
+      type: object
+      required: [suspended]
+      properties:
+        suspended:
+          type: boolean
+        reason:
+          type: string
