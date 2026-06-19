@@ -4,6 +4,7 @@ import { eq, or } from "drizzle-orm";
 import { requireAuth } from "../lib/auth";
 import { haversineKm } from "../lib/distance";
 import { FindMatchesBody } from "@workspace/api-zod";
+import { pushNotificationToUser } from "./notifications";
 
 const router = Router();
 
@@ -35,6 +36,21 @@ async function formatMatch(m: typeof matchesTable.$inferSelect, currentUserId: n
     deliveryType: m.deliveryType ?? null,
     createdAt: m.createdAt.toISOString(),
   };
+}
+
+async function insertAndPush(values: typeof notificationsTable.$inferInsert) {
+  const [notif] = await db.insert(notificationsTable).values(values).returning();
+  pushNotificationToUser(notif.userId, {
+    id: notif.id,
+    userId: notif.userId,
+    type: notif.type,
+    title: notif.title,
+    message: notif.message,
+    isRead: notif.isRead,
+    relatedId: notif.relatedId ?? null,
+    createdAt: notif.createdAt.toISOString(),
+  });
+  return notif;
 }
 
 router.get("/", requireAuth, async (req, res) => {
@@ -137,7 +153,7 @@ router.post("/find", requireAuth, async (req, res) => {
 });
 
 router.patch("/:id/accept", requireAuth, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const user = (req as any).user as typeof usersTable.$inferSelect;
 
   const [match] = await db.select().from(matchesTable).where(eq(matchesTable.id, id)).limit(1);
@@ -152,23 +168,21 @@ router.patch("/:id/accept", requireAuth, async (req, res) => {
   const receiverAccepted = updates.receiverAccepted ?? match.receiverAccepted;
   if (donorAccepted && receiverAccepted) {
     updates.status = "accepted";
-    // Notify both parties
-    await db.insert(notificationsTable).values([
-      {
-        userId: match.donorId,
-        type: "accepted",
-        title: "Match Accepted",
-        message: "Your match has been accepted by both parties. Contact details are now visible.",
-        relatedId: match.id,
-      },
-      {
-        userId: match.receiverId,
-        type: "accepted",
-        title: "Match Accepted",
-        message: "Your match has been accepted by both parties. Contact details are now visible.",
-        relatedId: match.id,
-      },
+    const msg = "Both parties accepted. Contact details are now visible.";
+    await Promise.all([
+      insertAndPush({ userId: match.donorId, type: "accepted", title: "Match Accepted", message: msg, relatedId: match.id }),
+      insertAndPush({ userId: match.receiverId, type: "accepted", title: "Match Accepted", message: msg, relatedId: match.id }),
     ]);
+  } else {
+    // Notify the other party that this side has accepted
+    const otherId = user.id === match.donorId ? match.receiverId : match.donorId;
+    await insertAndPush({
+      userId: otherId,
+      type: "match",
+      title: "Match Acceptance",
+      message: `${user.fullName.split(" ")[0]} has accepted the match. Accept to reveal contact details.`,
+      relatedId: match.id,
+    });
   }
 
   const [updated] = await db
@@ -181,7 +195,7 @@ router.patch("/:id/accept", requireAuth, async (req, res) => {
 });
 
 router.patch("/:id/confirm", requireAuth, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const user = (req as any).user as typeof usersTable.$inferSelect;
 
   const [match] = await db.select().from(matchesTable).where(eq(matchesTable.id, id)).limit(1);
@@ -196,12 +210,19 @@ router.patch("/:id/confirm", requireAuth, async (req, res) => {
     .where(eq(matchesTable.id, id))
     .returning();
 
-  // Notify receiver to leave a review
-  await db.insert(notificationsTable).values({
+  await insertAndPush({
     userId: match.receiverId,
     type: "review",
     title: "Please Leave a Review",
-    message: "Your donation has been confirmed. Please leave a review for the donor.",
+    message: "Exchange confirmed. Leave a review to build community trust.",
+    relatedId: match.id,
+  });
+
+  await insertAndPush({
+    userId: match.donorId,
+    type: "confirmed",
+    title: "Exchange Confirmed",
+    message: "The exchange has been confirmed. Thank you for donating!",
     relatedId: match.id,
   });
 

@@ -69,7 +69,7 @@ router.post("/", requireAuth, async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
 
   const [request] = await db.select().from(requestsTable).where(eq(requestsTable.id, id)).limit(1);
@@ -79,7 +79,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.patch("/:id", requireAuth, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const user = (req as any).user as typeof usersTable.$inferSelect;
 
   const [existing] = await db.select().from(requestsTable).where(eq(requestsTable.id, id)).limit(1);
@@ -101,7 +101,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
 });
 
 router.delete("/:id", requireAuth, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const user = (req as any).user as typeof usersTable.$inferSelect;
 
   const [existing] = await db.select().from(requestsTable).where(eq(requestsTable.id, id)).limit(1);

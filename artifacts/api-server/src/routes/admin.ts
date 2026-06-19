@@ -65,7 +65,7 @@ router.get("/users", requireAdmin, async (req, res) => {
 });
 
 router.patch("/users/:id/verify", requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const [updated] = await db
     .update(usersTable)
     .set({ isVerified: true, updatedAt: new Date() })
@@ -76,7 +76,7 @@ router.patch("/users/:id/verify", requireAdmin, async (req, res) => {
 });
 
 router.patch("/users/:id/suspend", requireAdmin, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const parsed = SuspendUserBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Invalid input" }); return; }
 

@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { db, reviewsTable, usersTable, matchesTable } from "@workspace/db";
+import { db, reviewsTable, usersTable, matchesTable, notificationsTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
 import { requireAuth, computeTrustLevel, trustPointsForRating } from "../lib/auth";
 import { CreateReviewBody } from "@workspace/api-zod";
+import { pushNotificationToUser } from "./notifications";
 
 const router = Router();
 
@@ -28,7 +29,6 @@ router.post("/", requireAuth, async (req, res) => {
     feedback: feedback ?? undefined,
   }).returning();
 
-  // Update donor's trust score
   const avgRating = Math.round((qualityRating + conditionRating + satisfactionRating) / 3);
   const points = trustPointsForRating(avgRating);
 
@@ -47,6 +47,25 @@ router.post("/", requireAuth, async (req, res) => {
       averageRating: Math.round(newAvg * 10) / 10,
       updatedAt: new Date(),
     }).where(eq(usersTable.id, match.donorId));
+
+    const [notif] = await db.insert(notificationsTable).values({
+      userId: match.donorId,
+      type: "review",
+      title: "You received a review",
+      message: `${user.fullName.split(" ")[0]} rated you ${avgRating}/5. You earned +${points} trust points!`,
+      relatedId: matchId,
+    }).returning();
+
+    pushNotificationToUser(match.donorId, {
+      id: notif.id,
+      userId: notif.userId,
+      type: notif.type,
+      title: notif.title,
+      message: notif.message,
+      isRead: notif.isRead,
+      relatedId: notif.relatedId ?? null,
+      createdAt: notif.createdAt.toISOString(),
+    });
   }
 
   res.status(201).json({

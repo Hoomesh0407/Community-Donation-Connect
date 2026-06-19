@@ -67,7 +67,7 @@ router.get("/leaderboard", async (_req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
 
   const [user] = await db.select().from(usersTable).where(eq(usersTable.id, id)).limit(1);
@@ -77,7 +77,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.patch("/:id", requireAuth, async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   const currentUser = (req as any).user as typeof usersTable.$inferSelect;
   if (currentUser.id !== id && currentUser.role !== "admin") {
     res.status(403).json({ error: "Forbidden" }); return;
@@ -97,7 +97,7 @@ router.patch("/:id", requireAuth, async (req, res) => {
 });
 
 router.get("/:id/trust", async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = parseInt(String(req.params.id));
   if (isNaN(id)) { res.status(400).json({ error: "Invalid id" }); return; }
 
   const [user] = await db.select().from(usersTable).where(eq(usersTable.id, id)).limit(1);

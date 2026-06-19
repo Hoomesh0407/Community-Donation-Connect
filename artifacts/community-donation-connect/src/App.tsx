@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { I18nProvider } from "@/lib/i18n";
+import { useSSENotifications } from "@/hooks/useSSENotifications";
 import NotFound from "@/pages/not-found";
 
 import LanguageSelect from "@/pages/language-select";
@@ -19,8 +20,15 @@ import Profile from "@/pages/profile";
 import Admin from "@/pages/admin";
 import Donate from "@/pages/donate";
 import RequestItem from "@/pages/request";
+import DonationDetail from "@/pages/donation-detail";
+import RequestDetail from "@/pages/request-detail";
 
 const queryClient = new QueryClient();
+
+function SSEBridge() {
+  useSSENotifications();
+  return null;
+}
 
 function Router() {
   return (
@@ -30,7 +38,9 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/donations" component={Donations} />
+      <Route path="/donations/:id" component={DonationDetail} />
       <Route path="/requests" component={Requests} />
+      <Route path="/requests/:id" component={RequestDetail} />
       <Route path="/matches" component={Matches} />
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/notifications" component={Notifications} />
@@ -50,6 +60,7 @@ function App() {
         <AuthProvider>
           <TooltipProvider>
             <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <SSEBridge />
               <Router />
             </WouterRouter>
             <Toaster />
