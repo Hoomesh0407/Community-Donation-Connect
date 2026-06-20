@@ -66,9 +66,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", requireAuth, async (req, res) => {
   const user = (req as any).user as typeof usersTable.$inferSelect;
-  if (user.role !== "donor" && user.role !== "admin") {
-    res.status(403).json({ error: "Only donors can create donations" }); return;
-  }
+  // Any registered user can donate items
 
   const parsed = CreateDonationBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Invalid input", details: parsed.error.issues }); return; }

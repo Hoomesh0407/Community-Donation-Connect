@@ -52,9 +52,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", requireAuth, async (req, res) => {
   const user = (req as any).user as typeof usersTable.$inferSelect;
-  if (user.role !== "receiver" && user.role !== "admin") {
-    res.status(403).json({ error: "Only receivers can create requests" }); return;
-  }
+  // Any registered user can request items
 
   const parsed = CreateRequestBody.safeParse(req.body);
   if (!parsed.success) { res.status(400).json({ error: "Invalid input", details: parsed.error.issues }); return; }

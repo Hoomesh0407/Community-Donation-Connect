@@ -12,10 +12,23 @@ import { useCreateDonation } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
+import { MapPin, Navigation, Loader2 } from "lucide-react";
 
-const CATEGORIES = ["Food", "Clothing", "Books", "Electronics", "Furniture", "Medical", "Toys", "Other"];
+const CATEGORIES = [
+  { id: "Food", label: "Food", icon: "🍱" },
+  { id: "Clothing", label: "Clothing", icon: "👕" },
+  { id: "Books", label: "Books", icon: "📚" },
+  { id: "Electronics", label: "Electronics", icon: "📱" },
+  { id: "Furniture", label: "Furniture", icon: "🪑" },
+  { id: "Medical", label: "Medical", icon: "💊" },
+  { id: "Toys", label: "Toys", icon: "🧸" },
+  { id: "Other", label: "Other", icon: "📦" },
+];
+
 const CONDITIONS = ["likeNew", "excellent", "good", "fair", "poor"] as const;
-const CONDITION_LABELS: Record<string, string> = { likeNew: "Like New", excellent: "Excellent", good: "Good", fair: "Fair", poor: "Poor" };
+const CONDITION_LABELS: Record<string, string> = {
+  likeNew: "Like New", excellent: "Excellent", good: "Good", fair: "Fair", poor: "Poor",
+};
 
 const donateSchema = z.object({
   category: z.string().min(1, "Select a category"),
@@ -35,6 +48,8 @@ export default function Donate() {
   const { toast } = useToast();
   const { isLoggedIn } = useAuth();
   const createDonation = useCreateDonation();
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [locationLabel, setLocationLabel] = useState<string | null>(null);
 
   const form = useForm<DonateFormValues>({
     resolver: zodResolver(donateSchema),
@@ -43,12 +58,50 @@ export default function Donate() {
       itemName: "",
       condition: "good",
       quantity: 1,
-      latitude: 17.385,
-      longitude: 78.4867,
+      latitude: undefined,
+      longitude: undefined,
       radiusKm: 10,
       address: "",
     },
   });
+
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+      toast({ title: "GPS not available", description: "Your browser does not support GPS.", variant: "destructive" });
+      return;
+    }
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = Math.round(pos.coords.latitude * 100000) / 100000;
+        const lng = Math.round(pos.coords.longitude * 100000) / 100000;
+        form.setValue("latitude", lat);
+        form.setValue("longitude", lng);
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`,
+            { headers: { "Accept-Language": "en" } }
+          );
+          const data = await res.json();
+          const area = data.address?.suburb || data.address?.village || data.address?.town || data.address?.city || "";
+          const district = data.address?.state_district || data.address?.county || "";
+          const label = [area, district].filter(Boolean).join(", ");
+          setLocationLabel(label || `${lat}, ${lng}`);
+          if (label) form.setValue("address", label);
+        } catch {
+          setLocationLabel(`${lat}, ${lng}`);
+        }
+        setGpsLoading(false);
+        toast({ title: "Location detected", description: "Your GPS location has been set." });
+      },
+      (err) => {
+        setGpsLoading(false);
+        toast({ title: "Location denied", description: "Please allow location access or enter coordinates manually.", variant: "destructive" });
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
 
   const onSubmit = (data: DonateFormValues) => {
     createDonation.mutate(
@@ -92,6 +145,7 @@ export default function Donate() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
+            {/* Category */}
             <Card>
               <CardHeader><CardTitle className="text-base font-semibold">Category</CardTitle></CardHeader>
               <CardContent>
@@ -100,22 +154,28 @@ export default function Donate() {
                   name="category"
                   render={({ field }) => (
                     <FormItem>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {CATEGORIES.map((cat) => (
                           <button
-                            key={cat}
+                            key={cat.id}
                             type="button"
-                            onClick={() => field.onChange(cat)}
-                            className={`p-3 rounded-lg border-2 text-sm font-medium transition-all duration-150 cursor-pointer ${
-                              field.value === cat
-                                ? "border-primary bg-primary/10 text-primary"
-                                : "border-border hover:border-primary/50"
+                            onClick={() => field.onChange(cat.id)}
+                            className={`p-3 rounded-xl border-2 text-sm font-medium transition-all duration-150 cursor-pointer flex flex-col items-center gap-1 ${
+                              field.value === cat.id
+                                ? "border-primary bg-primary/10 text-primary shadow-sm"
+                                : "border-border hover:border-primary/40 hover:bg-muted/50"
                             }`}
                           >
-                            {cat}
+                            <span className="text-xl">{cat.icon}</span>
+                            <span className="text-xs font-semibold leading-tight">{cat.label}</span>
                           </button>
                         ))}
                       </div>
+                      {field.value && (
+                        <p className="mt-2 text-sm font-medium text-primary">
+                          Selected: <span className="font-semibold">{field.value}</span>
+                        </p>
+                      )}
                       <FormMessage className="mt-2" />
                     </FormItem>
                   )}
@@ -123,6 +183,7 @@ export default function Donate() {
               </CardContent>
             </Card>
 
+            {/* Item Details */}
             <Card>
               <CardHeader><CardTitle className="text-base font-semibold">Item Details</CardTitle></CardHeader>
               <CardContent className="space-y-4">
@@ -137,70 +198,100 @@ export default function Donate() {
                     </FormItem>
                   )}
                 />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="condition"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Condition</FormLabel>
-                        <div className="grid grid-cols-2 gap-2">
-                          {CONDITIONS.map((c) => (
-                            <button
-                              key={c}
-                              type="button"
-                              onClick={() => field.onChange(c)}
-                              className={`p-2 rounded-lg border-2 text-sm font-medium transition-all cursor-pointer ${
-                                field.value === c
-                                  ? "border-primary bg-primary/10 text-primary"
-                                  : "border-border hover:border-primary/50"
-                              }`}
-                            >
-                              {CONDITION_LABELS[c]}
-                            </button>
-                          ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="quantity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Quantity</FormLabel>
-                        <FormControl><Input type="number" min={1} {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="condition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Condition</FormLabel>
+                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                        {CONDITIONS.map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => field.onChange(c)}
+                            className={`p-2 rounded-lg border-2 text-xs font-semibold transition-all cursor-pointer ${
+                              field.value === c
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-border hover:border-primary/50"
+                            }`}
+                          >
+                            {CONDITION_LABELS[c]}
+                          </button>
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="quantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl><Input type="number" min={1} className="w-32" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
 
+            {/* Location */}
             <Card>
-              <CardHeader><CardTitle className="text-base font-semibold">Location &amp; Pickup Radius</CardTitle></CardHeader>
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">Location &amp; Pickup Radius</CardTitle>
+              </CardHeader>
               <CardContent className="space-y-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2 border-primary/40 text-primary hover:bg-primary/5"
+                  onClick={detectLocation}
+                  disabled={gpsLoading}
+                >
+                  {gpsLoading ? <Loader2 size={16} className="animate-spin" /> : <Navigation size={16} />}
+                  {gpsLoading ? "Detecting location..." : "Use Current Location (GPS)"}
+                </Button>
+
+                {locationLabel && (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800">
+                    <MapPin size={14} className="shrink-0" />
+                    <span className="font-medium">{locationLabel}</span>
+                  </div>
+                )}
+
                 <FormField
                   control={form.control}
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address / Area (optional)</FormLabel>
-                      <FormControl><Input placeholder="e.g. Kukatpally, Hyderabad" {...field} /></FormControl>
+                      <FormLabel>Area / Address (optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Kukatpally, Hyderabad" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <div className="grid grid-cols-2 gap-4">
+
+                <div className="grid grid-cols-2 gap-3">
                   <FormField
                     control={form.control}
                     name="latitude"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Latitude</FormLabel>
-                        <FormControl><Input type="number" step="any" {...field} /></FormControl>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="any"
+                            placeholder="17.3850"
+                            value={field.value ?? ""}
+                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -211,18 +302,27 @@ export default function Donate() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Longitude</FormLabel>
-                        <FormControl><Input type="number" step="any" {...field} /></FormControl>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="any"
+                            placeholder="78.4867"
+                            value={field.value ?? ""}
+                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+
                 <FormField
                   control={form.control}
                   name="radiusKm"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Pickup Radius: {field.value} km</FormLabel>
+                      <FormLabel>Pickup Radius: <span className="font-bold text-primary">{field.value} km</span></FormLabel>
                       <FormControl>
                         <input
                           type="range"
