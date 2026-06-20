@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Heart, Bell, UserCircle, ShieldCheck, Menu, X, Home, Gift, HandHeart, Trophy } from "lucide-react";
+import { Heart, Bell, UserCircle, ShieldCheck, Menu, X, Home, Gift, HandHeart, Trophy, BookOpen } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,6 +29,7 @@ export function Navbar() {
     { href: "/donations", label: t("nav.donations"), icon: Gift },
     { href: "/requests", label: t("nav.requests"), icon: HandHeart },
     { href: "/leaderboard", label: t("nav.leaderboard"), icon: Trophy },
+    { href: "/tutorials", label: "How It Works", icon: BookOpen },
   ];
 
   const isActive = (href: string) => location === href;

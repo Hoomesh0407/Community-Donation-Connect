@@ -4,145 +4,9 @@ import { useTranslation } from "@/lib/i18n";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { useGetPlatformStats } from "@workspace/api-client-react";
-import { Box, MapPin, HandHeart, Shield, Star, Award } from "lucide-react";
-import { TutorialVideo } from "@/components/TutorialVideo";
-
-// ─── Tutorial step visuals ────────────────────────────────────────────────────
-
-function StepIcon({ emoji, bg }: { emoji: string; bg: string }) {
-  return (
-    <div className={`w-20 h-20 rounded-2xl ${bg} flex items-center justify-center text-4xl shadow-sm`}>
-      {emoji}
-    </div>
-  );
-}
-
-// Register & Login tutorial
-const registerSteps = [
-  {
-    title: "Open Community Donation Connect",
-    description: "Visit the website and click Register on the top-right corner of the screen.",
-    visual: <StepIcon emoji="🌐" bg="bg-blue-100" />,
-  },
-  {
-    title: "Fill in your details",
-    description: "Enter your full name, email, phone number, and a secure password. Choose your role — Donor, Receiver, or both!",
-    visual: <StepIcon emoji="📝" bg="bg-indigo-100" />,
-  },
-  {
-    title: "Create your account",
-    description: "Click 'Register' to create your profile. Your account is active immediately — no email verification wait.",
-    visual: <StepIcon emoji="✅" bg="bg-green-100" />,
-  },
-  {
-    title: "Login anytime",
-    description: "Click Login, enter your email and password, and you are in. Your session stays active across pages.",
-    visual: <StepIcon emoji="🔑" bg="bg-yellow-100" />,
-  },
-  {
-    title: "Explore your dashboard",
-    description: "After login, visit your Profile to see your trust score, total donations, badges, and community reviews.",
-    visual: <StepIcon emoji="👤" bg="bg-purple-100" />,
-  },
-];
-
-// Donate tutorial
-const donateSteps = [
-  {
-    title: "Click 'I Want To Donate'",
-    description: "From the home page or the Donate button in the menu, open the donation form.",
-    visual: <StepIcon emoji="🎁" bg="bg-blue-100" />,
-  },
-  {
-    title: "Pick a category",
-    description: "Choose what type of item you are donating — Food, Clothing, Books, Electronics, Furniture, Medical, Toys, or Other.",
-    visual: <StepIcon emoji="📦" bg="bg-orange-100" />,
-  },
-  {
-    title: "Describe your item",
-    description: "Enter the item name (e.g. 'Winter Jacket'), select its condition (Like New / Good / Fair), and set the quantity.",
-    visual: <StepIcon emoji="✏️" bg="bg-yellow-100" />,
-  },
-  {
-    title: "Set your location",
-    description: "Tap 'Use Current Location (GPS)' for automatic detection, or type your area manually. Set your pickup radius (e.g. 10 km).",
-    visual: <StepIcon emoji="📍" bg="bg-red-100" />,
-  },
-  {
-    title: "Publish and get matched",
-    description: "Click 'Publish Donation'. Our engine finds receivers nearby with the same category within your radius.",
-    visual: <StepIcon emoji="🔍" bg="bg-green-100" />,
-  },
-  {
-    title: "Accept the match",
-    description: "Go to Matches. You will see a receiver's first name and area. Click Accept to connect — contact details are revealed only when both accept.",
-    visual: <StepIcon emoji="🤝" bg="bg-teal-100" />,
-  },
-  {
-    title: "Complete the exchange",
-    description: "Meet up and hand over the item. Click Confirm Exchange when done. Your donor count goes up.",
-    visual: <StepIcon emoji="📬" bg="bg-indigo-100" />,
-  },
-  {
-    title: "Earn trust points",
-    description: "The receiver leaves a review (1–5 stars on quality, condition, and satisfaction). Each review earns you 10–20 trust points.",
-    visual: <StepIcon emoji="⭐" bg="bg-yellow-100" />,
-  },
-  {
-    title: "Level up your badge",
-    description: "0–50 pts = New Donor. 51–150 = Trusted. 151–300 = Highly Trusted. 301+ = Community Champion! Check your rank on the Leaderboard.",
-    visual: <StepIcon emoji="🏆" bg="bg-amber-100" />,
-  },
-];
-
-// Receive tutorial
-const receiveSteps = [
-  {
-    title: "Click 'I Need Help'",
-    description: "From the home page, click 'I Need Help' to open the item request form. Any registered user can request items.",
-    visual: <StepIcon emoji="🙏" bg="bg-blue-100" />,
-  },
-  {
-    title: "Choose a category",
-    description: "Select the category of what you need — Food, Clothing, Medical supplies, etc.",
-    visual: <StepIcon emoji="🗂️" bg="bg-purple-100" />,
-  },
-  {
-    title: "Describe your need",
-    description: "Enter the item name, explain why you need it, and mark urgency (Low / Medium / High / Critical).",
-    visual: <StepIcon emoji="💬" bg="bg-yellow-100" />,
-  },
-  {
-    title: "Share your location",
-    description: "Use GPS or type your area. Set the search radius (e.g. 15 km) to find donors near you.",
-    visual: <StepIcon emoji="🗺️" bg="bg-green-100" />,
-  },
-  {
-    title: "Wait for a smart match",
-    description: "Our engine finds active donors nearby with matching items. Critical urgency requests are prioritised first.",
-    visual: <StepIcon emoji="⚡" bg="bg-orange-100" />,
-  },
-  {
-    title: "Accept your match",
-    description: "You will see a notification when matched. Go to Matches, review the donor's trust score and badge, then click Accept.",
-    visual: <StepIcon emoji="🔔" bg="bg-teal-100" />,
-  },
-  {
-    title: "Check the donor's trust score",
-    description: "Before accepting, you can view the donor's average rating, total donations completed, and their badge (Trusted / Champion).",
-    visual: <StepIcon emoji="🛡️" bg="bg-indigo-100" />,
-  },
-  {
-    title: "Collect your item",
-    description: "Once both parties accept, full contact details are revealed. Coordinate pickup and collect your item.",
-    visual: <StepIcon emoji="🎒" bg="bg-pink-100" />,
-  },
-  {
-    title: "Leave a review",
-    description: "After receiving, leave a review for the donor — rate quality, condition, and satisfaction. This builds community trust.",
-    visual: <StepIcon emoji="⭐" bg="bg-yellow-100" />,
-  },
-];
+import { Box, MapPin, HandHeart, Shield, Star, Award, BookOpen, ArrowRight } from "lucide-react";
+import { TutorialCard } from "@/components/TutorialPlayer";
+import { TUTORIALS } from "@/data/tutorialContent";
 
 export default function Home() {
   const { t } = useTranslation();
@@ -230,34 +94,42 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Tutorial Videos */}
-        <section className="space-y-10">
-          <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold">Step-by-Step Tutorials</h2>
-            <p className="text-muted-foreground">Watch how to use Community Donation Connect from start to finish</p>
+        {/* Tutorial previews */}
+        <section className="space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                <BookOpen size={16} /> Tutorial Center
+              </div>
+              <h2 className="text-3xl font-bold">Step-by-Step Tutorials</h2>
+              <p className="text-muted-foreground">Animated guides in English and Telugu — learn every feature from start to finish</p>
+            </div>
+            <Button variant="outline" className="gap-2 shrink-0" asChild>
+              <Link href="/tutorials">
+                View All Tutorials <ArrowRight size={14} />
+              </Link>
+            </Button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <TutorialVideo
-              title="Getting Started"
-              subtitle="How to Register and Login"
-              steps={registerSteps}
-            />
-            <TutorialVideo
-              title="Donate an Item"
-              subtitle="Full donation process with trust score"
-              steps={donateSteps}
-            />
-            <TutorialVideo
-              title="Receive an Item"
-              subtitle="Request, match, collect and review"
-              steps={receiveSteps}
-            />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {TUTORIALS.slice(0, 3).map((t) => (
+              <TutorialCard
+                key={t.id}
+                tutorial={t}
+                onClick={() => {
+                  window.location.href = "/tutorials";
+                }}
+              />
+            ))}
           </div>
 
-          <p className="text-center text-sm text-muted-foreground">
-            Click Play on any tutorial above to see it step-by-step. Use the arrows to navigate manually.
-          </p>
+          <div className="text-center">
+            <Button asChild size="lg" className="gap-2">
+              <Link href="/tutorials">
+                <BookOpen size={16} /> Open Tutorial Center — All 5 Guides
+              </Link>
+            </Button>
+          </div>
         </section>
 
       </div>

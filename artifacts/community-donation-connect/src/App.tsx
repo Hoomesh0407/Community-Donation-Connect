@@ -22,6 +22,7 @@ import Donate from "@/pages/donate";
 import RequestItem from "@/pages/request";
 import DonationDetail from "@/pages/donation-detail";
 import RequestDetail from "@/pages/request-detail";
+import Tutorials from "@/pages/tutorials";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/donate" component={Donate} />
       <Route path="/request" component={RequestItem} />
       <Route path="/admin" component={Admin} />
+      <Route path="/tutorials" component={Tutorials} />
       <Route component={NotFound} />
     </Switch>
   );

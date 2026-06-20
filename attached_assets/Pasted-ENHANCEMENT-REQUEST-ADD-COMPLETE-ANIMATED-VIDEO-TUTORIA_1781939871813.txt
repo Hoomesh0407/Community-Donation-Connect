@@ -1,0 +1,411 @@
+ENHANCEMENT REQUEST – ADD COMPLETE ANIMATED VIDEO TUTORIAL SYSTEM TO COMMUNITY DONATION CONNECT
+
+The website already contains introductory videos on the home page. However, the current videos do not properly demonstrate the complete user journey with realistic examples.
+
+I want a fully interactive multilingual animated tutorial system integrated into the platform.
+
+OBJECTIVE
+
+Create a complete guided learning experience using animated videos that visually demonstrate every major process on the platform.
+
+The videos should not only explain features but also show actual website screens, button clicks, form filling, notifications, matching process, trust score calculations, reviews, and real-world donation scenarios.
+
+All videos must support:
+
+• English narration
+• Telugu narration
+• English captions
+• Telugu captions
+• Language switching
+• Mobile-friendly viewing
+• Full-screen mode
+• Progress tracking
+
+VIDEO SECTION PLACEMENT
+
+Create a dedicated page:
+
+Learn How Community Donation Connect Works
+
+Add a menu item:
+
+How It Works
+
+Add a Tutorials section on the home page.
+
+VIDEO SERIES
+
+Create 5 animated tutorial videos.
+
+Maximum duration:
+
+1.5 to 2 minutes each
+
+Style:
+
+• Modern animation
+• Friendly NGO style
+• Clean illustrations
+• Website screen recordings mixed with animation
+• Character-based storytelling
+• Telugu and English voice-over
+• Captions synchronized with narration
+
+VIDEO 1 – ACCOUNT REGISTRATION & LOGIN
+
+Title:
+
+Getting Started with Community Donation Connect
+
+Show complete process:
+
+1. Language Selection
+
+   * English
+   * Telugu
+
+2. Registration
+
+Show example user:
+
+Name: Ramesh Kumar
+Age: 28
+Occupation: Teacher
+Phone Number
+Email
+Location
+
+3. OTP Verification
+
+4. Profile Creation
+
+5. Role Selection
+
+   * Donor
+   * Receiver
+
+6. Login Process
+
+7. Dashboard Introduction
+
+Animation Requirements:
+
+• Highlight each field being filled
+• Explain why information is required
+• Show successful registration notification
+• Show successful login message
+
+VIDEO 2 – HOW TO DONATE AN ITEM
+
+Title:
+
+How to Donate an Item
+
+Example Scenario:
+
+Ramesh wants to donate a laptop.
+
+Show complete workflow:
+
+Step 1:
+Click "I Want To Donate"
+
+Step 2:
+Choose Category
+
+Example:
+Electronics
+
+Step 3:
+Enter Item Details
+
+Item:
+Dell Laptop
+
+Condition:
+Excellent
+
+Quantity:
+1
+
+Step 4:
+Upload Photos
+
+Show:
+• Image 1
+• Image 2
+• Image 3
+
+Step 5:
+Upload Video Proof
+
+Show item condition verification.
+
+Step 6:
+Set Pickup Location
+
+Step 7:
+Select Matching Radius
+
+Examples:
+3 km
+5 km
+10 km
+
+Step 8:
+Submit Donation
+
+Show:
+
+Donation Successfully Posted
+
+Animation Requirements:
+
+Show actual screens and form interactions.
+
+VIDEO 3 – HOW TO REQUEST AN ITEM
+
+Title:
+
+How to Receive Help
+
+Example Scenario:
+
+Lakshmi needs a laptop for education.
+
+Show:
+
+1. Login
+
+2. Click:
+
+I Need Help
+
+3. Select Category
+
+Electronics
+
+4. Enter Requirement
+
+Laptop
+
+5. Explain Need
+
+Education Purpose
+
+6. Select Radius
+
+5 km
+
+7. Submit Request
+
+Show:
+
+Request Successfully Created
+
+Animation Requirements:
+
+Show realistic example request.
+
+VIDEO 4 – SMART MATCHING SYSTEM
+
+Title:
+
+How Matching Works
+
+This is the most important video.
+
+Show complete real-world matching process.
+
+Example:
+
+Donor:
+Ramesh
+
+Receiver:
+Lakshmi
+
+Distance:
+3.2 km
+
+Show matching engine visually.
+
+Animation Flow:
+
+1. System scans nearby users.
+
+2. Compare:
+
+• Category
+• Item Type
+• Distance
+• Trust Score
+• User Verification
+
+3. System finds match.
+
+4. Real-time notification appears.
+
+Donor Notification:
+
+Laptop request found nearby.
+
+Receiver Notification:
+
+Laptop donor found nearby.
+
+Show:
+
+• Matching percentage
+• Distance calculation
+• Radius filtering
+• Trust score comparison
+
+IMPORTANT
+
+Phone number and email must remain hidden before match confirmation.
+
+After both users accept:
+
+Show:
+
+Phone Number Revealed
+
+Contact Enabled
+
+Animation should clearly demonstrate privacy protection.
+
+VIDEO 5 – TRUST SCORE, REVIEWS & COMMUNITY REPUTATION
+
+Title:
+
+Trust Score and Review System
+
+Show example donor profile.
+
+Profile Example:
+
+Name:
+Ramesh Kumar
+
+Trust Score:
+245
+
+Trust Badge:
+Highly Trusted Donor
+
+Show:
+
+1. Donation completed.
+
+2. Receiver submits review.
+
+Ratings:
+
+Item Quality:
+5 stars
+
+Condition Accuracy:
+5 stars
+
+Overall Satisfaction:
+5 stars
+
+Review:
+
+"The laptop worked perfectly and matched the uploaded video."
+
+Show system updating:
+
+Trust Score:
+225 → 245
+
+Badge Upgrade
+
+Show leaderboard.
+
+Explain:
+
+New Donor
+Trusted Donor
+Highly Trusted Donor
+Community Champion
+
+Also create receiver ratings and feedback history.
+
+ANIMATION REQUIREMENTS
+
+Each tutorial must:
+
+• Use website screenshots
+• Animate cursor movements
+• Highlight buttons
+• Highlight forms
+• Show notifications
+• Show success messages
+• Show real user examples
+• Show donor profile examples
+• Show receiver profile examples
+• Demonstrate every step visually
+
+MULTILINGUAL SUPPORT
+
+English Mode:
+• English narration
+• English captions
+
+Telugu Mode:
+• Telugu narration
+• Telugu captions
+
+Language switch should instantly change:
+
+• Narration
+• Captions
+• Tutorial labels
+
+UI REQUIREMENTS
+
+Create:
+
+• Tutorial Center Page
+• Video Library
+• Search Tutorials
+• Category Filters
+• Recently Watched
+• Continue Watching
+• Completion Status
+
+Add:
+
+"Watch Tutorial Before Continuing"
+
+buttons throughout registration, donation, request, matching, trust score, and review pages.
+
+ANALYTICS
+
+Track:
+
+• Video views
+• Completion percentage
+• Most watched tutorials
+• User engagement
+
+FINAL GOAL
+
+A first-time user with zero technical knowledge should be able to watch these videos and fully understand:
+
+• Registration
+• Login
+• Donating an item
+• Receiving an item
+• Matching process
+• Notifications
+• Trust score system
+• Reviews
+• Ratings
+• Privacy protection
+• Contact sharing rules
+• Community reputation system
+
+Generate all required pages, components, animations, multilingual content, video player features, sample tutorial assets, captions, narration scripts, and complete implementation code integrated into the existing Community Donation Connect platform.
